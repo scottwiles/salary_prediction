@@ -1,5 +1,6 @@
 data/*
-.ipynb_checkpoints/*
+.ipynb_checkpoints
+*.pyc
 local_colab.ps1
 *.docx
 First Portfolio Project.ipynb
