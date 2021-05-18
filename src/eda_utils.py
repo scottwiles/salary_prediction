@@ -1,6 +1,7 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
 def salary_per_category_table(category, df, target = 'salary'):
     """Aggregate the salaries dataframe grouped by the specified category and calculate the mean salary"""
     
