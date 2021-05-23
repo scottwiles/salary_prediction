@@ -6,3 +6,4 @@ local_colab.ps1
 First Portfolio Project.ipynb
 *.egg-info
 .venv
+run_lab.ps1
