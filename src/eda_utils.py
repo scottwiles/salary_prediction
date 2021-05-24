@@ -16,7 +16,7 @@ def salary_per_category_plot(category, df, target = 'salary', order = None, hue_
     """Plot the average salary per the specified category, does not handle creating or showing figures (plt.figure/ plt.show)"""
     
     if isinstance(category, list) and len(category) > 2:
-        return print("Category must be either a 'str', or a 'list' type of length 2")
+        raise TypeError("Category must be either a 'str', or a 'list' of length 2")
     
     category_is_str = isinstance(category, str)
     
@@ -33,10 +33,10 @@ class PlotStats:
     def __init__(self, df, target_col):
         
         if not isinstance(df, pd.DataFrame):
-            return print("The input data should be a pandas dataframe")
+            raise TypeError("The input data should be a pandas dataframe")
         
         if not target_col in df.columns:
-            return print("Target column not found in the data frame")
+            raise ValueError("Target column not found in the data frame")
         
         target = df[target_col]
         
@@ -48,8 +48,8 @@ class PlotStats:
     def plot_IQR(self):
         """Add IQR range to plot based on y-axis variable, does not handle creating or showing figures (plt.figure/ plt.show)"""
 
-        plt.axhline(y = self.median, linestyle = ":", label = "avg salary", zorder = 0, alpha = 0.5)
+        plt.axhline(y = self.median, linestyle = ":", label = "Median salary", zorder = 0, alpha = 0.5)
         plt.axhline(y = self.lower_quartile, label = "Lower quartile", linestyle = "--", zorder = 0, alpha = 0.5)
         plt.axhline(y = self.upper_quartile, label = "Upper quartile", linestyle = "-.", zorder = 0, alpha = 0.5)
-        plt.axhspan(ymin = self.lower_quartile, ymax = self.upper_quartile, color = 'grey', alpha = 0.15, label = "IQR")
+        plt.axhspan(ymin = self.lower_quartile, ymax = self.upper_quartile, color = 'grey', label = "IQR", zorder = 0, alpha = 0.15)
         plt.legend(bbox_to_anchor = (1,1))
