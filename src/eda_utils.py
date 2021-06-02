@@ -29,6 +29,28 @@ def salary_per_category_plot(category, df, target = 'salary', order = None, hue_
     plt.xticks(rotation = 45)
     
     
+def faceted_histogram_plot(data, grid_col, grid_kwargs = {}, plot_kwargs = {}, target = 'salary'):
+    
+    if not isinstance(data, pd.DataFrame):
+        raise ValueError("The data should be a pandas dataframe.")
+    
+    plotGrid = sns.FacetGrid(data, col = grid_col, **grid_kwargs)
+    plotGrid.map(_faceted_IQR_histogram_figure, target, **plot_kwargs)
+    plt.legend(bbox_to_anchor = (1,1))
+    plt.show()
+    
+    
+def _faceted_IQR_histogram_figure(x, plot_stats = None, **kwargs):
+    """This function is for internal use in the 'faceted_histogram_plot' function and gets fed into the FacetGrid().map() method"""
+    sns.histplot(x, **kwargs)
+      
+    if plot_stats:
+        if not isinstance(plot_stats, PlotStats):
+            raise ValueError("The 'plot_stats' argument must be an instance of the 'PlotStats' class")
+            
+        plot_stats.plot_IQR(x_axis = True)
+    
+    
 class PlotStats:
     def __init__(self, df, target_col):
         
@@ -45,11 +67,22 @@ class PlotStats:
         self.lower_quartile = target.quantile(0.25)
         self.upper_quartile = target.quantile(0.75)
         
-    def plot_IQR(self):
+    def plot_IQR(self, x_axis = False):
         """Add IQR range to plot based on y-axis variable, does not handle creating or showing figures (plt.figure/ plt.show)"""
+        
+        if not x_axis:
 
-        plt.axhline(y = self.median, linestyle = ":", label = "Median salary", zorder = 0, alpha = 0.5)
-        plt.axhline(y = self.lower_quartile, label = "Lower quartile", linestyle = "--", zorder = 0, alpha = 0.5)
-        plt.axhline(y = self.upper_quartile, label = "Upper quartile", linestyle = "-.", zorder = 0, alpha = 0.5)
-        plt.axhspan(ymin = self.lower_quartile, ymax = self.upper_quartile, color = 'grey', label = "IQR", zorder = 0, alpha = 0.15)
-        plt.legend(bbox_to_anchor = (1,1))
+            plt.axhline(y = self.median, linestyle = ":", label = "Median salary", zorder = 0, alpha = 0.5)
+            plt.axhline(y = self.lower_quartile, label = "Lower quartile", linestyle = "--", zorder = 0, alpha = 0.5)
+            plt.axhline(y = self.upper_quartile, label = "Upper quartile", linestyle = "-.", zorder = 0, alpha = 0.5)
+            plt.axhspan(ymin = self.lower_quartile, ymax = self.upper_quartile, color = 'grey', label = "IQR", zorder = 0, alpha = 0.15)
+            plt.legend(bbox_to_anchor = (1,1))
+            
+        else:
+ 
+            plt.axvline(x = self.median, linestyle = ":", label = "Median salary", zorder = 0, alpha = 0.5)
+            plt.axvline(x = self.lower_quartile, label = "Lower quartile", linestyle = "--", zorder = 0, alpha = 0.5)
+            plt.axvline(x = self.upper_quartile, label = "Upper quartile", linestyle = "-.", zorder = 0, alpha = 0.5)
+            plt.axvspan(xmin = self.lower_quartile, xmax = self.upper_quartile, color = 'grey', label = "IQR", zorder = 0, alpha = 0.15)
+            plt.legend(bbox_to_anchor = (1,1))
+                       
