@@ -32,7 +32,7 @@ def salary_per_category_plot(category, df, target = 'salary', order = None, hue_
 def faceted_histogram_plot(data, grid_col, grid_kwargs = {}, plot_kwargs = {}, target = 'salary'):
     
     if not isinstance(data, pd.DataFrame):
-        raise ValueError("The data should be a pandas dataframe.")
+        raise TypeError("The data should be a pandas dataframe.")
     
     plotGrid = sns.FacetGrid(data, col = grid_col, **grid_kwargs)
     plotGrid.map(_faceted_IQR_histogram_figure, target, **plot_kwargs)
@@ -40,13 +40,22 @@ def faceted_histogram_plot(data, grid_col, grid_kwargs = {}, plot_kwargs = {}, t
     plt.show()
     
     
-def _faceted_IQR_histogram_figure(x, plot_stats = None, **kwargs):
-    """This function is for internal use in the 'faceted_histogram_plot' function and gets fed into the FacetGrid().map() method"""
+def _faceted_IQR_histogram_figure(x, plot_stats = None, y_text_scale = 0.20, x_text_coord = 170, **kwargs):
+    """This plotting function is for internal use in the 'faceted_histogram_plot' function and gets fed into the FacetGrid().map() method"""
+    if not 0 <= y_text_scale <= 1:
+        raise ValueError("The 'y_text_scale' argument should be between 0 and 1.")
+    
     sns.histplot(x, **kwargs)
-      
+    # add text to display the sample mean and standard deviation corresponding to each facet in the grid
+    _, y_scale_top = plt.ylim()
+    y_scale_top -= y_scale_top * y_text_scale  # Scale down the placement of the y-coordinate of text so that it is slightly lower than the limit of the y-axis
+    subset_mean = int(x.mean())
+    subset_std = int(x.std())
+    plt.text(x = x_text_coord, y = y_scale_top, s = f"Avg: {subset_mean}\nStd: {subset_std}")
+    
     if plot_stats:
         if not isinstance(plot_stats, PlotStats):
-            raise ValueError("The 'plot_stats' argument must be an instance of the 'PlotStats' class")
+            raise TypeError("The 'plot_stats' argument must be an instance of the 'PlotStats' class")
             
         plot_stats.plot_IQR(x_axis = True)
     
@@ -85,4 +94,3 @@ class PlotStats:
             plt.axvline(x = self.upper_quartile, label = "Upper quartile", linestyle = "-.", zorder = 0, alpha = 0.5)
             plt.axvspan(xmin = self.lower_quartile, xmax = self.upper_quartile, color = 'grey', label = "IQR", zorder = 0, alpha = 0.15)
             plt.legend(bbox_to_anchor = (1,1))
-                       
