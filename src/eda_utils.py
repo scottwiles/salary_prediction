@@ -41,7 +41,8 @@ def faceted_histogram_plot(data, grid_col, grid_kwargs = {}, plot_kwargs = {}, t
     
     
 def _faceted_IQR_histogram_figure(x, plot_stats = None, y_text_scale = 0.20, x_text_coord = 170, **kwargs):
-    """This plotting function is for internal use in the 'faceted_histogram_plot' function and gets fed into the FacetGrid().map() method"""
+    """This plotting function is for internal use within the 'faceted_histogram_plot' function and gets fed into the FacetGrid().map() method"""
+    
     if not 0 <= y_text_scale <= 1:
         raise ValueError("The 'y_text_scale' argument should be between 0 and 1.")
     
