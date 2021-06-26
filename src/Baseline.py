@@ -10,6 +10,8 @@ class BaselineModel:
         self.id_var = id_var
         self.target = target
         self.numeric_vars = numeric_vars
+        self.output_pred_col = self.target + "_preds"  # Column name of the predictions
+        self.is_fitted = False
         
         self.category_vars = BaselineModel._check_variable_arguments(category_vars)
         self.variables_for_fitting = self.category_vars.copy()  # copy to avoid reference
@@ -23,11 +25,10 @@ class BaselineModel:
             self.variables_for_fitting.extend(numeric_vars)
     
     
-    def fit(self, data):
+    def fit(self, data: pd.DataFrame):
         
         # Check types
-        if not isinstance(data, pd.DataFrame):
-            raise TypeError("The data must be a pandas dataframe")
+        BaselineModel._check_input_data_type(data)
 
         if not self.target in data.columns:
             raise ValueError("The specified target column is not found in the data, consider setting it manually with BaselineModel().target")
@@ -37,7 +38,7 @@ class BaselineModel:
         
         # Calculate category averages and store fitted averages
         category_averages = salary_per_category_table(self.category_vars, data, target = self.target)
-        self.fitted_category_salaries = category_averages.set_index(self.category_vars).rename(columns = {self.target: self.target + "_preds"})
+        self.fitted_category_salaries = category_averages.set_index(self.category_vars).rename(columns = {self.target: self.output_pred_col})
         
         # If numeric variables are given, get grouped averages and subtract overall salary mean
         if self.numeric_vars:
@@ -45,24 +46,26 @@ class BaselineModel:
             self.avg_salary_overall = data[self.target].mean()
     
             for column in self.fitted_numeric_salaries.keys():
-                # Calculate the grouped average salary and subtract the overall average salary from it
+                # Calculate the grouped average salary, and subtract the overall average salary from it
                 fitted_values = data.groupby(column)[self.target].mean() - self.avg_salary_overall
                 self.fitted_numeric_salaries[column] = fitted_values.rename(f"{column}_diff")
         
+        self.is_fitted = True
+        
     
-    def predict(self, new_data, return_only_preds = False, return_all_cols = False, numeric_combo = "sum"):
+    def predict(self, new_data: pd.DataFrame, return_only_preds = False, return_all_cols = False, numeric_combo = "sum"):
         
         # Check that the model is fitted
-        if not isinstance(self.fitted_category_salaries, pd.DataFrame):
+        if not self.is_fitted:
             return print("There are no fitted values, make a call to BaselineModel().fit() before predicting.")
         
-        if not isinstance(new_data, pd.DataFrame):
-            raise TypeError('The data must be in a pandas dataframe')
+        # Ensure data is pd.DataFrame
+        BaselineModel._check_input_data_type(new_data)
 
         if not numeric_combo in ["sum", "mean"]:
-            raise ValueError("The numeric_combo argument must be one of: sum, mean")
+            raise ValueError("The numeric_combo argument must be one of: 'sum', 'mean'")
         
-        # Check that the grouping variables used during fitting are in the columns of new data
+        # Check that the grouping variables used during fitting are present in the new data
         self._ensure_variables_in_data(new_data.columns)
         
         # Add categorical predictions by left joining the average categorical salaries 
@@ -78,26 +81,27 @@ class BaselineModel:
             predictions['sum_numeric_diff'] = predictions[numeric_diff_cols].sum(axis = 1)
             predictions['mean_numeric_diff'] = predictions[numeric_diff_cols].mean(axis = 1)
 
-            predictions['preds_with_sum'] = predictions[self.target + "_preds"] + predictions['sum_numeric_diff']
-            predictions['preds_with_mean'] = predictions[self.target + "_preds"] + predictions['mean_numeric_diff']
+            predictions['preds_with_sum'] = predictions[self.output_pred_col] + predictions['sum_numeric_diff']
+            predictions['preds_with_mean'] = predictions[self.output_pred_col] + predictions['mean_numeric_diff']
+            predictions['category_preds_tmp'] = predictions[self.output_pred_col]
 
             if numeric_combo == "sum":
-                predictions[self.target + "_preds"] = predictions['preds_with_sum']
+                predictions[self.output_pred_col] = predictions['preds_with_sum']
             else:
-                predictions[self.target + "_preds"] = predictions['preds_with_mean']
+                predictions[self.output_pred_col] = predictions['preds_with_mean']
             
             # By default drop the intermediary columns that were added for the numeric predictions
             if not return_all_cols:
-                cols_to_drop = [col for col in predictions.columns if col.endswith(("_diff", "mean", "sum"))]
+                cols_to_drop = [col for col in predictions.columns if col.endswith(("_diff", "mean", "sum", "_tmp"))]
                 predictions = predictions.drop(columns = cols_to_drop)
         
         if return_only_preds:
-            predictions =  predictions.loc[:, [self.id_var, self.target + "_preds"]]
+            predictions = predictions.loc[:, [self.id_var, self.output_pred_col]]
         
         return predictions
         
     
-    def evaluate_fit(self, data, numeric_combination = None):
+    def evaluate_fit(self, train_data, test_data, numeric_combination = None):
         """This should test a set of parameters (i.e. combo of categorical and numeric variables) and return main metrics
 
         takes in the training data set, test data set
@@ -105,6 +109,8 @@ class BaselineModel:
         gives MSE for training data and test data for mean and sum numeric combo (if applicable)
 
         """
+        # If not fitted, Call fit
+        # Predict on test and training set
 
         pass
 
@@ -125,6 +131,12 @@ class BaselineModel:
             column_s = "columns are" if len(variable_difference) > 1 else "column is"
             
             raise ValueError(f"The following required {column_s} not in the data: {missing_vars}")
+
+
+    @staticmethod
+    def _check_input_data_type(data):
+        if not isinstance(data, pd.DataFrame):
+            raise TypeError('The data must be in a pandas dataframe')
             
 
     @staticmethod
@@ -140,7 +152,7 @@ class BaselineModel:
         is_str = isinstance(variable_argument, str)
         
         if not ( is_str or isinstance(variable_argument, list) ):
-            raise TypeError("The 'grouping_vars' and 'numeric_vars' arguments must be either str or list type")
+            raise TypeError("The 'grouping_vars' and 'numeric_vars' arguments must be either str or list")
         
         # If the argument was passed as a string return it as a list length 1
         if is_str:

@@ -7,3 +7,4 @@ First Portfolio Project.ipynb
 *.egg-info
 .venv
 run_lab.ps1
+.vscode/
