@@ -1,3 +1,4 @@
+from numpy.core.fromnumeric import mean
 from src.eda_utils import salary_per_category_table
 import pandas as pd
 from sklearn.metrics import mean_squared_error
@@ -22,7 +23,7 @@ class BaselineModel:
             # Store the fitted values for the numeric columns in a dictionary where the key is the column name 
             # and the value is a series of fitted values - initialized to None before fitting.
             self.fitted_numeric_salaries = {column:None for column in self.numeric_vars}
-            self.variables_for_fitting.extend(numeric_vars)
+            self.variables_for_fitting.extend(self.numeric_vars)
     
     
     def fit(self, data: pd.DataFrame):
@@ -101,18 +102,21 @@ class BaselineModel:
         return predictions
         
     
-    def evaluate_fit(self, train_data, test_data, numeric_combination = None):
-        """This should test a set of parameters (i.e. combo of categorical and numeric variables) and return main metrics
+    def evaluate(self, train_data, test_data, **predict_kwargs):
+        """Evaluates test and training set error in terms of MSE.
 
-        takes in the training data set, test data set
-        fits the model to the training data
-        gives MSE for training data and test data for mean and sum numeric combo (if applicable)
-
+        predict_kwargs are passed to the BaselineModel().predict() method
         """
-        # If not fitted, Call fit
-        # Predict on test and training set
+        if not self.is_fitted:
+            self.fit(train_data)
+        
+        # Training error 
+        train_error = mean_squared_error(train_data[self.target], self.predict(train_data, **predict_kwargs)[self.output_pred_col])
 
-        pass
+        # Test error
+        test_error = mean_squared_error(test_data[self.target], self.predict(test_data, **predict_kwargs)[self.output_pred_col])
+
+        return {'training_error': train_error, 'test_error': test_error}
 
 
     def _ensure_variables_in_data(self, new_columns):
@@ -148,7 +152,6 @@ class BaselineModel:
 
         Returns a list
         """
-        
         is_str = isinstance(variable_argument, str)
         
         if not ( is_str or isinstance(variable_argument, list) ):
