@@ -1,7 +1,9 @@
-from numpy.core.fromnumeric import mean
 from src.eda_utils import salary_per_category_table
-import pandas as pd
 from sklearn.metrics import mean_squared_error
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 
 
 class BaselineModel:
@@ -162,3 +164,70 @@ class BaselineModel:
             variable_argument = [variable_argument]
         
         return variable_argument
+
+
+class TestModels():
+
+    def __init__(self, train_data, test_data, category_combos, plot = True):
+        self.best_model_score = 1e6
+        self.best_model_params = {
+            'category_vars': None,
+            'numeric_vars': None,
+            'numeric_combo': None
+        }
+
+        model_names = ['only_categorical', 'add_yearsExperience', 'add_milesFromMetropolis', 'add_both']
+        numeric_combos = [None, 'yearsExperience', 'milesFromMetropolis', ['yearsExperience', 'milesFromMetropolis']]
+
+        df_index = []
+        df_data = []
+
+        for categories in category_combos:
+            df_row = {}
+            df_index.append(", ".join(categories))
+            
+            models = {model_names[i]: BaselineModel(categories, numeric_combos[i]) for i in range(len(model_names))}
+            
+            for i in models:
+                # For both numeric cols calculate mean and sum methods of combining the numeric predictors
+                if i == 'add_both':
+                    for combo in ['mean', 'sum']:
+                        score = models[i].evaluate(train_data, test_data, numeric_combo = combo)['test_error']
+                        df_row[f'{i}_{combo}'] = score
+                        self.test_best_score(score, models[i], combo)
+                else:
+                    score = models[i].evaluate(train_data, test_data)['test_error']
+                    df_row[i] = score
+                    self.test_best_score(score, models[i])
+            
+            df_data.append(df_row)
+
+        self.df_output = pd.DataFrame(df_data, index = df_index)
+
+        # Print best score and params
+        print(f"Best model score: {self.best_model_score}\n")
+        print("Best model parameters:")
+        print(self.best_model_params)
+        print("\n\n")
+
+        if plot:
+            self.plot_outcome()
+        
+    def test_best_score(self, score, model: BaselineModel, numeric_combo = None):
+
+        if score < self.best_model_score:
+            self.best_model_score = score
+            self.best_model_params = {
+                'category_vars': model.category_vars,
+                'numeric_vars': model.numeric_vars,
+                'numeric_combo': numeric_combo
+            }
+
+    def plot_outcome(self):
+        plt.figure(figsize=(7,7))
+        ax = sns.heatmap(self.df_output, annot = True, fmt = '.0f', cmap = 'Reds', linewidths = 0.5)
+        ax.set_xlabel('numeric variable combinations')
+        ax.set_ylabel('categorical variable combinations')
+        ax.tick_params('x', rotation = 45)
+        plt.title("Mean squared error for each model")
+        plt.show()
