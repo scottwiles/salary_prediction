@@ -1,9 +1,9 @@
-from src.eda_utils import salary_per_category_table
 from sklearn.metrics import mean_squared_error
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+from src.eda_utils import salary_per_category_table
 
 
 class BaselineModel:
@@ -43,7 +43,7 @@ class BaselineModel:
         category_averages = salary_per_category_table(self.category_vars, data, target = self.target)
         self.fitted_category_salaries = category_averages.set_index(self.category_vars).rename(columns = {self.target: self.output_pred_col})
         
-        # If numeric variables are given, get grouped averages and subtract overall salary mean
+        # If numeric variables are given, get grouped averages and subtract from overall salary mean
         if self.numeric_vars:
             # Calculate the overall average salary
             self.avg_salary_overall = data[self.target].mean()
@@ -105,7 +105,7 @@ class BaselineModel:
         
     
     def evaluate(self, train_data, test_data, **predict_kwargs):
-        """Evaluates test and training set error in terms of MSE.
+        """Evaluate test and training set error in terms of MSE.
 
         predict_kwargs are passed to the BaselineModel().predict() method
         """
@@ -188,17 +188,17 @@ class TestModels():
             
             models = {model_names[i]: BaselineModel(categories, numeric_combos[i]) for i in range(len(model_names))}
             
-            for i in models:
+            for mdl in models:
                 # For both numeric cols calculate mean and sum methods of combining the numeric predictors
-                if i == 'add_both':
+                if mdl == 'add_both':
                     for combo in ['mean', 'sum']:
-                        score = models[i].evaluate(train_data, test_data, numeric_combo = combo)['test_error']
-                        df_row[f'{i}_{combo}'] = score
-                        self.test_best_score(score, models[i], combo)
+                        score = models[mdl].evaluate(train_data, test_data, numeric_combo = combo)['test_error']
+                        df_row[f'{mdl}_{combo}'] = score
+                        self.test_best_score(score, models[mdl], combo)
                 else:
-                    score = models[i].evaluate(train_data, test_data)['test_error']
-                    df_row[i] = score
-                    self.test_best_score(score, models[i])
+                    score = models[mdl].evaluate(train_data, test_data)['test_error']
+                    df_row[mdl] = score
+                    self.test_best_score(score, models[mdl])
             
             df_data.append(df_row)
 
@@ -214,6 +214,7 @@ class TestModels():
             self.plot_outcome()
         
     def test_best_score(self, score, model: BaselineModel, numeric_combo = None):
+        """Compare a new model score with the saved best score. If the new score is lower, then update the saved best score."""
 
         if score < self.best_model_score:
             self.best_model_score = score
