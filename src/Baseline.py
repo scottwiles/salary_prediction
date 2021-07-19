@@ -28,7 +28,8 @@ class BaselineModel:
             self.variables_for_fitting.extend(self.numeric_vars)
     
     
-    def fit(self, data: pd.DataFrame):
+    def fit(self, data: pd.DataFrame) -> None:
+        """Calculates average salary values on a training dataframe and stores them as fitted values to use for predicting on new data."""
         
         # Check types
         BaselineModel._check_input_data_type(data)
@@ -57,6 +58,7 @@ class BaselineModel:
         
     
     def predict(self, new_data: pd.DataFrame, return_only_preds = False, return_all_cols = False, numeric_combo = "sum"):
+        """Uses the fitted average salary values from fitting to predict salaries on new data"""
         
         # Check that the model is fitted
         if not self.is_fitted:
@@ -80,10 +82,12 @@ class BaselineModel:
             for column in self.fitted_numeric_salaries.keys():
                 predictions = predictions.join(self.fitted_numeric_salaries[column], on = column)
 
+            # Combine the numeric prediction columns using both mean and sum
             numeric_diff_cols = [col for col in predictions.columns if col.endswith("_diff")]
             predictions['sum_numeric_diff'] = predictions[numeric_diff_cols].sum(axis = 1)
             predictions['mean_numeric_diff'] = predictions[numeric_diff_cols].mean(axis = 1)
 
+            # Add the numeric predictions to the categorical grouped averages to give final prediction
             predictions['preds_with_sum'] = predictions[self.output_pred_col] + predictions['sum_numeric_diff']
             predictions['preds_with_mean'] = predictions[self.output_pred_col] + predictions['mean_numeric_diff']
             predictions['category_preds_tmp'] = predictions[self.output_pred_col]
@@ -168,28 +172,43 @@ class BaselineModel:
 
 class TestModels():
 
-    def __init__(self, train_data, test_data, category_combos, plot = True):
+    def __init__(self, train_data, test_data, category_combos, variations, plot = True):
         self.best_model_score = 1e6
         self.best_model_params = {
             'category_vars': None,
             'numeric_vars': None,
             'numeric_combo': None
         }
+        self.best_model = None
 
-        model_names = ['only_categorical', 'add_yearsExperience', 'add_milesFromMetropolis', 'add_both']
-        numeric_combos = [None, 'yearsExperience', 'milesFromMetropolis', ['yearsExperience', 'milesFromMetropolis']]
+        if not isinstance(variations, dict):
+            raise TypeError("The 'variations' argument must be a dictionary")
 
+        # Initialize variables which will be the resulting output dataframe
         df_index = []
         df_data = []
 
+        # For each of the combinations of categorical variables, test a series of variations 
+        # of the model and append to the list as rows of data
         for categories in category_combos:
-            df_row = {}
+            # Rows are initialized as a dictionary and appended to a list 'df_data' for the final dataframe output
+            df_row = dict()
+            # dataframe index is a comma separated list of the categorical variables used for fitting
             df_index.append(", ".join(categories))
             
-            models = {model_names[i]: BaselineModel(categories, numeric_combos[i]) for i in range(len(model_names))}
+            # Initialize a dictionary of models for each combination
+            # There are 5 variations of models per combination of categorical variables
+            # Each combination gets a separate model for:
+                # 1.     Only categorical variables
+                # 2 & 3. Using one of the numerical variables
+                # 4.     Using both numerical variables and combine using 'mean'
+                # 5.     Using both numerical variables and combine using 'sum'
+            # models = {model_names[i]: BaselineModel(categories, numeric_combos[i]) for i in range(len(model_names))}
+            models = {model_name: BaselineModel(categories, numeric_variation) for model_name, numeric_variation in variations.items()}
             
+            # For each of the model variations evaluate test set MSE and append score to each row
             for mdl in models:
-                # For both numeric cols calculate mean and sum methods of combining the numeric predictors
+                # When both numeric cols are used, calculate mean and sum methods of combining the numeric predictors
                 if mdl == 'add_both':
                     for combo in ['mean', 'sum']:
                         score = models[mdl].evaluate(train_data, test_data, numeric_combo = combo)['test_error']
@@ -218,6 +237,7 @@ class TestModels():
 
         if score < self.best_model_score:
             self.best_model_score = score
+            self.best_model = model
             self.best_model_params = {
                 'category_vars': model.category_vars,
                 'numeric_vars': model.numeric_vars,
