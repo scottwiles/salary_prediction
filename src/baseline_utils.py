@@ -45,4 +45,5 @@ def visualize_numeric_fit(data: pd.Series, plt_figsize = (10,8)):
         sizes = (50, 300)
     )
     plt.ylabel("Impact to predicted categorical salary")
+    plt.title(f"Prediction impact behavior - {variable_name}")
     plt.show()

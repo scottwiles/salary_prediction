@@ -24,7 +24,7 @@ class BaselineModel:
             self.numeric_vars =  BaselineModel._check_variable_arguments(numeric_vars)
             # Store the fitted values for the numeric columns in a dictionary where the key is the column name 
             # and the value is a series of fitted values - initialized to None before fitting.
-            self.fitted_numeric_salaries = {column:None for column in self.numeric_vars}
+            self.fitted_numeric_diffs = {column:None for column in self.numeric_vars}
             self.variables_for_fitting.extend(self.numeric_vars)
     
     
@@ -49,10 +49,10 @@ class BaselineModel:
             # Calculate the overall average salary
             self.avg_salary_overall = data[self.target].mean()
     
-            for column in self.fitted_numeric_salaries.keys():
+            for column in self.fitted_numeric_diffs.keys():
                 # Calculate the grouped average salary, and subtract the overall average salary from it
                 fitted_values = data.groupby(column)[self.target].mean() - self.avg_salary_overall
-                self.fitted_numeric_salaries[column] = fitted_values.rename(f"{column}_diff")
+                self.fitted_numeric_diffs[column] = fitted_values.rename(f"{column}_diff")
         
         self.is_fitted = True
         
@@ -79,8 +79,8 @@ class BaselineModel:
         # Add numeric predictions by left joining the average numeric salaries
         if self.numeric_vars:
             # For each of the numeric columns, join the predicted salaries using the values of the column as the key
-            for column in self.fitted_numeric_salaries.keys():
-                predictions = predictions.join(self.fitted_numeric_salaries[column], on = column)
+            for column in self.fitted_numeric_diffs.keys():
+                predictions = predictions.join(self.fitted_numeric_diffs[column], on = column)
 
             # Combine the numeric prediction columns using both mean and sum
             numeric_diff_cols = [col for col in predictions.columns if col.endswith("_diff")]
@@ -170,7 +170,7 @@ class BaselineModel:
         return variable_argument
 
 
-class TestModels():
+class SelectBestModel():
 
     def __init__(self, train_data, test_data, category_combos, variations, plot = True):
         self.best_model_score = 1e6
@@ -191,7 +191,7 @@ class TestModels():
         # For each of the combinations of categorical variables, test a series of variations 
         # of the model and append to the list as rows of data
         for categories in category_combos:
-            # Rows are initialized as a dictionary and appended to a list 'df_data' for the final dataframe output
+            # Rows are initialized as a dictionary and appended to the list 'df_data' for the final dataframe output
             df_row = dict()
             # dataframe index is a comma separated list of the categorical variables used for fitting
             df_index.append(", ".join(categories))
@@ -218,9 +218,11 @@ class TestModels():
                     score = models[mdl].evaluate(train_data, test_data)['test_error']
                     df_row[mdl] = score
                     self.test_best_score(score, models[mdl])
-            
+
+            # Add to the output dataframe data
             df_data.append(df_row)
 
+        # output data frame of results
         self.df_output = pd.DataFrame(df_data, index = df_index)
 
         # Print best score and params
