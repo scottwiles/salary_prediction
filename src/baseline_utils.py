@@ -47,3 +47,26 @@ def visualize_numeric_fit(data: pd.Series, plt_figsize = (10,8)):
     plt.ylabel("Impact to predicted categorical salary")
     plt.title(f"Prediction impact behavior - {variable_name}")
     plt.show()
+
+
+def get_residuals(data: pd.DataFrame, add_to_df = False) -> pd.DataFrame:
+    """Given a dataframe of baseline predictions, return a dataframe with residual columns added
+    
+    Must set return_all_cols=True when predicting with BaselineModel().predict
+    """
+    # required columns for this to work
+    required_cols = ['jobId', 'salary', 'salary_preds', 'category_preds_tmp']
+    # If there are any required columns missing, raise error
+    if [i for i in required_cols if i not in data.columns]:
+        raise ValueError(f'Prediction columns seem to be missing. Be sure to set "return_all_cols" when predicting from BaselineModel()')
+        
+    data['final_residuals'] = data.salary - data.salary_preds
+    data['category_residuals'] = data.salary - data.category_preds_tmp
+    
+    # Use the absolute value to compare the magnitude of residual values
+    data['final_error_higher'] = data.final_residuals.abs() > data.category_residuals.abs()
+    
+    if not add_to_df:
+        data = data.loc[:, required_cols + ['final_residuals', 'category_residuals', 'final_error_higher']]
+    
+    return data
