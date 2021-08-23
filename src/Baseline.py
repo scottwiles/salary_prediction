@@ -196,14 +196,8 @@ class SelectBestModel():
             # dataframe index is a comma separated list of the categorical variables used for fitting
             df_index.append(", ".join(categories))
             
-            # Initialize a dictionary of models for each combination
-            # There are 5 variations of models per combination of categorical variables
-            # Each combination gets a separate model for:
-                # 1.     Only categorical variables
-                # 2 & 3. Using one of the numerical variables
-                # 4.     Using both numerical variables and combine using 'mean'
-                # 5.     Using both numerical variables and combine using 'sum'
-            # models = {model_names[i]: BaselineModel(categories, numeric_combos[i]) for i in range(len(model_names))}
+            # For each of 'category_combos' iterate over the dictionary of variations and
+            # create a BaselineModel() instance for each, storing all the models in a dictionary
             models = {model_name: BaselineModel(categories, numeric_variation) for model_name, numeric_variation in variations.items()}
             
             # For each of the model variations evaluate test set MSE and append score to each row
