@@ -82,12 +82,9 @@ class EvaluateModel:
             # Compute cross validation scores
             cv_values = cross_validate(model, X, y = y, scoring = self.scoring, cv = 5, return_train_score = True)
             
-            # Append results to dataframe list
-            scores = {
-                'test_score': np.mean(cv_values['test_score']),
-                'train_score': np.mean(cv_values['train_score']),
-                'fit_time': np.mean(cv_values['fit_time'])
-            }
+            # Append results to dataframe list - cv_values is a dictionary of arrays
+            # so this dictionary comprehension computes the mean of each array and saves a new dictionary
+            scores = {name:np.mean(value) for name, value in cv_values.items()}
             
             cv_results.append(scores)
             cv_index.append(model_test[0])
@@ -101,24 +98,33 @@ class EvaluateModel:
                 self.best_model = model
             
             if verbose:
-                # print progress after each model test
-                print('-'*30)
-                print(f"Finished training: {model_test[0]}")
-                print(f"Test score  : {scores['test_score']}")
-                print(f"Train score : {scores['train_score']}", end = '\n\n')
+                EvaluateModel.print_progress(model_name = model_test[0], metrics = scores) 
             
-        # Make output dataframe
-        self.test_results = pd.DataFrame(data = cv_results, index = cv_index).sort_values('test_score', ascending = False)
+        # Make output dataframe sorted by test score in descending order
+        self.test_results = (
+            pd.DataFrame(data = cv_results, index = cv_index)
+            .sort_values('test_score', ascending = False)
+            .reindex(columns = ['test_score', 'train_score', 'fit_time', 'score_time'])
+        )
+        
         
         # print end results
         print('::'*30)
         print("Best model found:")
         print(self.best_model, end = '\n\n')
         print(f"Model score (using '{self.scoring}')")
-        print(self.best_score)
+        print(self.best_score, end = '\n\n')
         display(self.test_results)
         
         return
+    
+    @staticmethod
+    def print_progress(model_name, metrics):
+        # print progress after each model test
+        print('-'*30)
+        print(f"Finished training: {model_name}")
+        print(f"Test score  : {metrics['test_score']}")
+        print(f"Train score : {metrics['train_score']}", end = '\n\n')
     
     
 class EvaluatePreprocessors(EvaluateModel):
