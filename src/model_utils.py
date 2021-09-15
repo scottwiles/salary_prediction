@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 
 from IPython.display import display
-from numpy.lib.function_base import disp
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import cross_validate
 
@@ -75,7 +74,9 @@ class EvaluateModel:
         
         # Iterate over each item in the test_models array, compute scores and save results
         for model_test in self.test_models:
-            
+
+            # TODO: We can easily modify this to make the class be able to test whole pipelines as well (i.e. testing lin reg vs rf vs SGDRegressor)
+            # check self.test_type, if it is 'pipeline' model can just be assigned by the variable model_test
             # Make the model object for testing
             model = self.make_model_pipe(model_test)
             
