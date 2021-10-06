@@ -1,3 +1,4 @@
+models/*
 data/*
 .ipynb_checkpoints
 *.pyc
@@ -8,3 +9,6 @@ First Portfolio Project.ipynb
 .venv
 run_lab.ps1
 .vscode/
+notebooks/test_model.ipynb
+notebooks/Untitled.ipynb
+r_code/visualize_high_error_vs_low_error.R
