@@ -11,4 +11,5 @@ run_lab.ps1
 .vscode/
 notebooks/test_model.ipynb
 notebooks/Untitled.ipynb
+notebooks/prototype.ipynb
 r_code/visualize_high_error_vs_low_error.R
