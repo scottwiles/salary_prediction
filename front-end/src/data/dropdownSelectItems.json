@@ -1,0 +1,59 @@
+[
+    {
+        "stateName": "jobTypeSelected",
+        "label": "Job Type",
+        "inputLabelId": "jobTypeLabel",
+        "menu_items": [
+            {"value": "JANITOR", "label": "Janitor"},
+            {"value": "JUNIOR", "label": "Junior"},
+            {"value": "SENIOR", "label": "Senior"},
+            {"value": "MANAGER", "label": "Manager"},
+            {"value": "VICE_PRESIDENT", "label": "Vice President"},
+            {"value": "CFO", "label": "CFO"},
+            {"value": "CTO", "label": "CTO"},
+            {"value": "CEO", "label": "CEO"}
+        ]
+    },
+    {
+        "stateName": "degreeSelected",
+        "label": "Degree",
+        "inputLabelId": "degreeLabel",
+        "menu_items": [
+            {"value": "NONE", "label": "None"},
+            {"value": "HIGH_SCHOOL", "label": "High School"},
+            {"value": "BACHELORS", "label": "Bachelors"},
+            {"value": "MASTERS", "label": "Masters"},
+            {"value": "DOCTORAL", "label": "Doctoral"}
+        ]
+    },
+    {
+        "stateName": "majorSelected",
+        "label": "Major",
+        "inputLabelId": "majorLabel",
+        "menu_items": [
+            {"value": "NONE", "label": "None"},
+            {"value": "CHEMISTRY", "label": "Chemistry"},
+            {"value": "LITERATURE", "label": "Literature"},
+            {"value": "BIOLOGY", "label": "Biology"},
+            {"value": "PHYSICS", "label": "Physics"},
+            {"value": "COMPSCI", "label": "Computer Science"},
+            {"value": "MATH", "label": "Math"},
+            {"value": "BUSINESS", "label": "Business"},
+            {"value": "ENGINEERING", "label": "Engineering"}
+        ]
+    },
+    {
+        "stateName": "industrySelected",
+        "label": "Industry",
+        "inputLabelId": "industryLabel",
+        "menu_items": [
+            {"value": "EDUCATION", "label": "Education"},
+            {"value": "SERVICE", "label": "Service"},
+            {"value": "AUTO", "label": "Auto"},
+            {"value": "HEALTH", "label": "Health"},
+            {"value": "WEB", "label": "Web"},
+            {"value": "FINANCE", "label": "Finance"},
+            {"value": "OIL", "label": "Oil"}
+        ]
+    }
+]
