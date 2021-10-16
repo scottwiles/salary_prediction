@@ -17,10 +17,12 @@ def index():
 def favicon():
     return send_from_directory(app.static_folder, 'favicon.ico')
 
-@app.route('/submit-predictions', methods = ['POST'])
+@app.route('/single-prediction', methods = ['POST'])
 def submit_predictions():
     print("Request from the front-end:")
     req = request.get_json()
+    # for single items the 'req' object will be a dictionary, wrapping it in a list is 
+    # convenient for pandas dataframe
     if isinstance(req, dict):
         req = [req]
 
@@ -28,9 +30,22 @@ def submit_predictions():
 
     predicted_salary = model.predict(req_df)
     
-    print(req_df, end = '\n\n')
-    print(f"Predicted salary: {predicted_salary}", end = '\n\n')
     return {'message': predicted_salary.tolist()}
+
+@app.route('/multiple-prediction', methods = ['POST'])
+def multi_predict():
+    # Get json data from request
+    req = request.get_json()
+    # Make a DataFrame and separate the id's for each row of data
+    req_df = pd.DataFrame(req)
+    output_ids = req_df.id
+
+    req_df.drop(columns='id', inplace=True)
+    # Get predictions
+    preds = model.predict(req_df).tolist()
+
+    output = {id:pred for id, pred in zip(output_ids, preds)}
+    return {'message': output}
 
 if __name__ == "__main__":
     debug_value = False
