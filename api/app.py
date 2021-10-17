@@ -21,7 +21,7 @@ def favicon():
 
 @app.route('/single-prediction', methods = ['POST'])
 def submit_predictions():
-    
+
     req = request.get_json()
     # for single items the 'req' object will be a dictionary, wrapping it in a list is 
     # convenient for pd.DataFrame()
@@ -57,4 +57,4 @@ if __name__ == "__main__":
         print("\nRunning with dev mode enabled\n")
         debug_value = True
 
-    app.run(debug=debug_value)
+    app.run(host='0.0.0.0', debug=debug_value)
