@@ -1,4 +1,5 @@
 import sys
+import os
 from flask import Flask, send_from_directory, request
 import pandas as pd
 import pickle
@@ -52,9 +53,11 @@ def multi_predict():
 
 
 if __name__ == "__main__":
+    port = int(os.getenv('PORT', 5000))
+
     debug_value = False
     if len(sys.argv) > 1 and sys.argv[1] == '--dev':
         print("\nRunning with dev mode enabled\n")
         debug_value = True
 
-    app.run(host='0.0.0.0', debug=debug_value)
+    app.run(host='0.0.0.0', port = port, debug=debug_value)
