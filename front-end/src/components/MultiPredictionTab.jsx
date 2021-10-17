@@ -1,6 +1,6 @@
 import React from 'react';
 // custom components
-import { SubmitButton, numberFormatter } from './InputControls.jsx';
+import { SubmitButton, numberFormatter, ClearButton } from './InputControls.jsx';
 // mui
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -16,8 +16,9 @@ import Divider from '@mui/material/Divider';
 export default class MultiPredictionTab extends React.Component {
 
     render() {
-        console.log('job data', this.props.jobData)
-        console.log('pred values', this.props.preds)
+        // Don't display the clear button if there are no jobs added to the list
+        let clearButton = this.props.jobData.length >= 1 ? <ClearButton clearFunction={this.props.clearFunction} /> : null;
+
         return (
             <>
                 <Stack direction='row' justifyContent='space-between' sx={{ mr: '5px' }}>
@@ -56,12 +57,11 @@ export default class MultiPredictionTab extends React.Component {
                                         <TableCell align='right'>{salaryText}</TableCell>
                                     </TableRow>
                                 )
-
                             })}
                         </TableBody>
                     </Table>
                 </TableContainer>
-
+                {clearButton}
             </>
         );
     };

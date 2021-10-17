@@ -13,6 +13,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import CheckIcon from '@mui/icons-material/Check';
 import Button from '@mui/material/Button';
+import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 
 import css from '../css/main-styles.module.css';
 
@@ -22,6 +23,9 @@ export const numberFormatter = Intl.NumberFormat('en-US', {
     maximumFractionDigits: 0
 });
 
+// Button that handles submitting predictions
+// gets a prop for the function to execute on click
+// makes use of both single and multi-submit functions
 export const SubmitButton = (props) => {
 
     return (
@@ -36,6 +40,24 @@ export const SubmitButton = (props) => {
     );
 };
 
+// Clear the list of jobs in the multi predict tab
+// gets a function passed from the main app component
+export const ClearButton = (props) => {
+
+    return (
+        <Box display='flex' sx={{mt: '5px'}}>
+            <Button
+                variant='outlined'
+                color='secondary'
+                startIcon={<ClearOutlinedIcon />}
+                sx={{ ml: 'auto' }}
+                onClick={() => props.clearFunction()}
+            >
+                Clear
+            </Button>
+        </Box>
+    );
+};
 
 
 // DropdownSelect component

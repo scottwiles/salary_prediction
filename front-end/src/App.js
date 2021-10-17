@@ -40,28 +40,30 @@ class App extends React.Component {
             multiPredictValues: {} 
         };
     };
-
+    // handle changing tabs, this function is used in the InputsTab component
     changeTab = (event, newValue) => {
         this.setState({ tabValue: newValue })
 
     };
-
+    // handles opening the menu in the right side of the AppBar
     toggleMenu = () => {
         let currentValue = this.state.menuOpen;
         this.setState({menuOpen: !currentValue});
     }
-
+    // opens a link in a new window, receives a link param
+    // used in the AppBar menu
     handleMenuLink = (link) => {
         window.open(link, '_blank');
         this.toggleMenu();
     }
-
+    // toggles mutli predict mode on or off
     handleMultiSwitch = () => {
         let multiEnabled = this.state.multiPredict;
 
         this.setState({multiPredict: !multiEnabled});
     };
-
+    // used in a button to go directly to the next tab, used on the inputs tab
+    // with multi predict mode enabled
     gotoMultiTab = () => {
         this.setState({tabValue: 'multi'})
     };
@@ -85,7 +87,12 @@ class App extends React.Component {
 
     };
 
+    // makes a post request for the jobs within the multiJobArray
     submitMultiPredictions = () => {
+        // If there is nothing in the multiJobArray, don't make the api request
+        if (this.state.multiJobArray.length === 0) {
+            return
+        };
         // Setup POST request
         let requestOptions = {
             method: "POST",
@@ -98,11 +105,14 @@ class App extends React.Component {
             .then(data => this.setState({multiPredictValues: data.message}))
     };
 
+    clearMultiPredictions = () => {
+        this.setState({multiJobArray: [], multiPredictValues: {}});
+    };
+
     render() {
         let menuAnchor = document.getElementById('menu-button');
 
         let numJobs = this.state.multiJobArray.length;
-        console.log(this.state.multiJobArray);
 
         return (
 
@@ -158,6 +168,7 @@ class App extends React.Component {
                                     jobData={this.state.multiJobArray}
                                     preds={this.state.multiPredictValues} 
                                     multiSubmitFunction={this.submitMultiPredictions}
+                                    clearFunction={this.clearMultiPredictions}
                                 />
                             </TabPanel>
                         </TabContext>
