@@ -9,8 +9,9 @@
     * [4.2 Machine learning](#42-machine-learning)
     * [4.3 Evaluation](#43-model-evaluation)
 * [5. Deployment](#5-deployment)
-    * [5.1 Flask API](#51-flask-api)
-    * [5.2 React front-end](#52-react-front-end)
+    * [5.1 React ront-end](#51-react-front-end)
+    * [5.2 Flask API](#52-flask-api)
+* [6. Conclusion](#6-conclusion)
 
 ---
 
@@ -23,6 +24,8 @@
 The dataset contains information from 1 million job listings.
 
 Features:
+- `jobId`: (primary key) - Unique identifier for each job.
+- `companyId`: Company identifier for each job.
 - `jobType`: Describes the senority or rank of the job. (i.e. Junior, Senior, Manager, CEO).
 - `degree`: Highest degree obtained. (i.e. None, Masters, Doctoral).
 - `major`: Specific field of study in school. (i.e. Engineering, Business).
@@ -40,8 +43,6 @@ Features:
 
 # 4. Model development
 
-
----
 
 ## 4.1 Baseline model
 
@@ -62,14 +63,17 @@ Once the API and front-end are ready for deployment, the docker image can be bui
 - [Deployment details](./docs/deployment.md)
 
 
-## 5.1 Flask API
 
-## 5.2 React front-end
+## 5.1 React front-end
+
+The web app is deployed on Heroku: **[`Live app`](https://swiles-salary-prediction.herokuapp.com/)**
+
+
+
+![](./img/ui-screenshot.jpg)
+
+## 5.2 Flask API
 
 ---
 
-# Environment Setup
-
-Refer to [this documentation](https://github.com/scottwiles/salary_prediction/blob/main/docs/environment-setup.md) to recreate the environment
-
-[front-end](./Dockerfile)
+# 6. Conclusion

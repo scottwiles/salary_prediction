@@ -1,6 +1,6 @@
 # Docker image
 
-The Docker image structure is designed such that minimal configuration changes are needed between development and production environments.
+The Docker image structure is designed so that minimal configuration changes are needed between development and production environments.
 
 Following are some details around the setup of the app in the Docker image.
 
@@ -8,15 +8,16 @@ Following are some details around the setup of the app in the Docker image.
 `/usr/salary_prediction`
 
 ### Files and directories copied
-Only the files directly related to the api or front-end are copied into the image.
+Only the files directly related to the api or front-end are copied into the image. (i.e. any notebooks or unnecessary source code are not included.)
 
 These are:
-- Flask api located at `./api/`
-- React build distribution located at `./front-end/build/`
+- Python requirements file
+- Flask api directory, located at `./api/`
+- React build distribution directory, located at `./front-end/build/`
 - Pickled model located at `./models/<filename>`
 
-The Flask API is setup to serve static files from the `./front-end/build/` folder.
-- i.e. [refer here](../api/app.py#L10)
+The Flask API expects to serve static files from the `./front-end/build/` folder.
+-  [(i.e. refer here)](../api/app.py#L10)
 
 ---
 
@@ -32,7 +33,7 @@ npm run build
 ```
 
 ### 2. Build docker image
-In main project directory:
+In main project directory:  
 `docker build -t < img-name > .`
 
 * _Not required for Heroku deployment_ 
