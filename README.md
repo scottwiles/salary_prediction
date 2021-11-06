@@ -1,7 +1,7 @@
 # Salary Prediction
 
 # Contents
-* [1. Why estimate salaries?](#1-why-estimate-salaries)  
+* [1. Why estimate salaries?](#1-why-estimate-salaries)
 * [2. Data](#2-data)  
 * [3. EDA](#3-eda)
 * [4. Model development](#4-model-development)
@@ -17,6 +17,11 @@
 
 # 1. Why estimate salaries?
 
+Many job seekers utilize websites such as LinkedIn, or Indeed when searching for new opportunities. But the majority of jobs posted do not include salary information. This can make it difficult to assess whether a job is worth applying to or where to expect salary negotiations to start, especially if you are considering relocating. 
+
+For example, consider evaluating two different jobs. One located right in the middle of a big city, the other in a smaller rural town. You could readily compare the cost of living between the two locations on websites such as '[bestplaces.net](https://www.bestplaces.net/cost-of-living/)'. But without having an estimated salary, it would be more difficult to determine what kind of lifestyle you could have in either location. A high-end salary would probably not feel as sufficient in Silicon Valley versus Cincinnati, OH.
+
+This project aims to solve this problem by creating a predictive model to estimate salaries given a set of features. Details on the steps of the process are outlined in this document.
 
 ---
 
@@ -27,12 +32,17 @@ Features:
 - `jobId`: (primary key) - Unique identifier for each job.
 - `companyId`: Company identifier for each job.
 - `jobType`: Describes the senority or rank of the job. (i.e. Junior, Senior, Manager, CEO).
-- `degree`: Highest degree obtained. (i.e. None, Masters, Doctoral).
+- `degree`: Highest degree obtained. (i.e. None, Bachelors, Doctoral).
 - `major`: Specific field of study in school. (i.e. Engineering, Business).
 - `industry`: Which industry the job is a part of. (i.e. Finance, Service).
 - `yearsExperience`: Years of experience, ranging from 0-24.
 - `milesFromMetropolis`: Distance from city center, ranging from 0-99.
 - `salary`: (target) - Listed in 1000s of dollars, as the unit of measurement.
+
+#### Features not used for modeling:
+
+- `jobId`: This is a unique identifier for each job, and won't provide much value.
+- `companyId`: If the goal of this model was to predict salaries for only a certain set of companies, then this feature would be useful for modeling. However, we aim to predict salaries for any given company. So we will not use this feature here.
 
 ---
 
