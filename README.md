@@ -17,11 +17,11 @@
 
 # 1. Why estimate salaries?
 
-Many job seekers utilize websites such as LinkedIn, or Indeed when searching for new opportunities. But the majority of jobs posted do not include salary information. This can make it difficult to assess whether a job is worth applying to or where to expect salary negotiations to start, especially if you are considering relocating. 
+Many job seekers utilize websites such as LinkedIn or Indeed when searching for new opportunities. But the majority of jobs posted do not include salary information. This makes it difficult to decide whether a job is worth applying to, or where to expect salary negotiations to start, especially if you are considering relocating.
 
-For example, consider evaluating two different jobs. One located right in the middle of a big city, the other in a smaller rural town. You could readily compare the cost of living between the two locations on websites such as '[bestplaces.net](https://www.bestplaces.net/cost-of-living/)'. But without having an estimated salary, it would be more difficult to determine what kind of lifestyle you could have in either location. A high-end salary would probably not feel as sufficient in Silicon Valley versus Cincinnati, OH.
+For example, consider evaluating two different jobs. One job is in the middle of a big city, the other in a smaller rural town. You could readily compare the cost of living between the two locations on websites such as [bestplaces.net](https://www.bestplaces.net/cost-of-living/). But without having an estimated salary, it is harder to determine what kind of lifestyle you could have in either location. A job that even has a high-end salary would probably not feel as sufficient in Silicon Valley versus Cincinnati, OH.
 
-This project aims to solve this problem by creating a predictive model to estimate salaries given a set of features. Details on the steps of the process are outlined in this document.
+This project aims to solve this problem by creating a predictive model to estimate salaries given a set of features that describe a job. The steps of the process are outlined below.
 
 ---
 
