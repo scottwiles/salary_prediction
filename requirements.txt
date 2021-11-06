@@ -39,7 +39,6 @@ seaborn==0.11.1
 siuba==0.0.25
 six==1.16.0
 SQLAlchemy==1.4.22
--e git+https://github.com/scottwiles/salary_prediction.git@653f85342cef3f35d069aabe5fb6b54b35b5ebde#egg=src
 statsmodels==0.12.2
 tabulate==0.8.9
 threadpoolctl==2.1.0
