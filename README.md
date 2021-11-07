@@ -69,7 +69,7 @@ This project makes use of Docker, for easy deployment into a cloud environment.
 - [View Dockerfile](./Dockerfile)
 
 Once the API and front-end are ready for deployment, the docker image can be built and/or the image can be pushed to Heroku.
-- [Deployment details](./docs/deployment.md)
+- [Deployment details](./references/deployment.md)
 
 
 
