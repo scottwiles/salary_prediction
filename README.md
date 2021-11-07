@@ -15,17 +15,19 @@
 
 ---
 
+
 # 1. Why estimate salaries?
 
-Many job seekers utilize websites such as LinkedIn or Indeed when searching for new opportunities. But the majority of jobs posted do not include salary information. This makes it difficult to decide whether a job is worth applying to, or where to expect salary negotiations to start, especially if you are considering relocating.
+Many job seekers utilize websites such as LinkedIn or Indeed when searching for new opportunities. But the majority of jobs posted do not include salary information. This makes it difficult to decide whether a job is worth applying to or where to expect salary negotiations to start, especially when looking for jobs in different cities.
 
-For example, consider evaluating two different jobs. One job is in the middle of a big city, the other in a smaller rural town. You could readily compare the cost of living between the two locations on websites such as [bestplaces.net](https://www.bestplaces.net/cost-of-living/). But without having an estimated salary, it is harder to determine what kind of lifestyle you could have in either location. A job that even has a high-end salary would probably not feel as sufficient in Silicon Valley versus Cincinnati, OH.
+For example, consider evaluating two different jobs. One job is in the middle of a big city, the other in a smaller rural town. You could readily compare the cost of living between the two locations on websites like [bestplaces.net](https://www.bestplaces.net/cost-of-living/). But without having an estimated salary, it is harder to determine what kind of lifestyle you could have in either location. A job that even has a high-end salary would probably not feel as sufficient in Silicon Valley versus Cincinnati, OH.
 
 This project aims to solve this problem by creating a predictive model to estimate salaries given a set of features that describe a job. The steps of the process are outlined below.
 
----
+
 
 # 2. Data
+
 The dataset contains information from 1 million job listings.
 
 Features:
@@ -42,17 +44,13 @@ Features:
 #### Features not used for modeling:
 
 - `jobId`: This is a unique identifier for each job, and won't provide much value.
-- `companyId`: If the goal of this model was to predict salaries for only a certain set of companies, then this feature would be useful for modeling. However, we aim to predict salaries for any given company. So we will not use this feature here.
+- `companyId`: If the goal of this model was to predict salaries for only a certain set of companies, then this feature would be useful. However, we aim to predict salaries for any given company. So we will not use this feature here.
 
----
 
 # 3. EDA
 
 
----
-
 # 4. Model development
-
 
 ## 4.1 Baseline model
 
@@ -61,9 +59,10 @@ Features:
 ## 4.3 Model evaluation
 
 
----
 
 # 5. Deployment
+
+The web app is deployed on Heroku: **[`Live app`](https://swiles-salary-prediction.herokuapp.com/)**
 
 This project makes use of Docker, for easy deployment into a cloud environment.
 
@@ -75,10 +74,6 @@ Once the API and front-end are ready for deployment, the docker image can be bui
 
 
 ## 5.1 React front-end
-
-The web app is deployed on Heroku: **[`Live app`](https://swiles-salary-prediction.herokuapp.com/)**
-
-
 
 ![](./img/ui-screenshot.jpg)
 
