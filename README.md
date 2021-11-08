@@ -8,7 +8,7 @@
     * [4.1  Baseline](#41-baseline-model)
     * [4.2 Machine learning](#42-machine-learning)
 * [5. Deployment](#5-deployment)
-    * [5.1 React ront-end](#51-react-front-end)
+    * [5.1 React front-end](#51-react-front-end)
     * [5.2 Flask API](#52-flask-api)
 * [6. Conclusion](#6-conclusion)
 
