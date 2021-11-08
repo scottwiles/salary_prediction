@@ -24,7 +24,7 @@ The Flask API expects to serve static files from the `./front-end/build/` folder
 # Building and deploying to Heroku
 
 
-### 1. Make sure front-end build is up-to-date with latest changes
+### 1. Make sure the React build is up-to-date with latest changes
 From the main project directory, change to `./front-end` directory and run build script.
 
 ```shell
@@ -34,9 +34,9 @@ npm run build
 
 ### 2. Build docker image
 In main project directory:  
-`docker build -t < img-name > .`
+`docker build -t <image-name> .`
 
-* _Not required for Heroku deployment_ 
+* _Not required for Heroku deployment, since it will build an image before pushing_ 
 
 ### 3. Push to Heroku
 Using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
@@ -45,6 +45,6 @@ In main project directory:
 ```shell
 heroku login
 heroku container:login
-heroku container:push web -a < app-name >
-heroku container:release web -a < app-name >
+heroku container:push web -a <app-name>
+heroku container:release web -a <app-name>
 ```

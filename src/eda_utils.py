@@ -80,18 +80,26 @@ class PlotStats:
     def plot_IQR(self, x_axis = False):
         """Add IQR range to plot based on y-axis variable, does not handle creating or showing figures (plt.figure/ plt.show)"""
         
+        plot_labels = {
+            'median': 'Overall median',
+            'lower_qt': 'Overall 25%',
+            'upper_qt': 'Overall 75%',
+            'IQR': 'Overall IQR'
+        }
+        
+        # If 'x_axis' is False draw horizontal lines and spans, otherwise draw vertical ones
         if not x_axis:
 
-            plt.axhline(y = self.median, linestyle = ":", label = "Median salary", zorder = 0, alpha = 0.5)
-            plt.axhline(y = self.lower_quartile, label = "Lower quartile", linestyle = "--", zorder = 0, alpha = 0.5)
-            plt.axhline(y = self.upper_quartile, label = "Upper quartile", linestyle = "-.", zorder = 0, alpha = 0.5)
-            plt.axhspan(ymin = self.lower_quartile, ymax = self.upper_quartile, color = 'grey', label = "IQR", zorder = 0, alpha = 0.15)
+            plt.axhline(y = self.median, linestyle = ":", label = plot_labels['median'], zorder = 0, alpha = 0.5)
+            plt.axhline(y = self.lower_quartile, label = plot_labels['lower_qt'], linestyle = "--", zorder = 0, alpha = 0.5)
+            plt.axhline(y = self.upper_quartile, label = plot_labels['upper_qt'], linestyle = "-.", zorder = 0, alpha = 0.5)
+            plt.axhspan(ymin = self.lower_quartile, ymax = self.upper_quartile, color = 'grey', label = plot_labels['IQR'], zorder = 0, alpha = 0.15)
             plt.legend(bbox_to_anchor = (1,1))
             
         else:
  
-            plt.axvline(x = self.median, linestyle = ":", label = "Median salary", zorder = 0, alpha = 0.5)
-            plt.axvline(x = self.lower_quartile, label = "Lower quartile", linestyle = "--", zorder = 0, alpha = 0.5)
-            plt.axvline(x = self.upper_quartile, label = "Upper quartile", linestyle = "-.", zorder = 0, alpha = 0.5)
-            plt.axvspan(xmin = self.lower_quartile, xmax = self.upper_quartile, color = 'grey', label = "IQR", zorder = 0, alpha = 0.15)
+            plt.axvline(x = self.median, linestyle = ":", label = plot_labels['median'], zorder = 0, alpha = 0.5)
+            plt.axvline(x = self.lower_quartile, label = plot_labels['lower_qt'], linestyle = "--", zorder = 0, alpha = 0.5)
+            plt.axvline(x = self.upper_quartile, label = plot_labels['upper_qt'], linestyle = "-.", zorder = 0, alpha = 0.5)
+            plt.axvspan(xmin = self.lower_quartile, xmax = self.upper_quartile, color = 'grey', label = plot_labels['IQR'], zorder = 0, alpha = 0.15)
             plt.legend(bbox_to_anchor = (1,1))
