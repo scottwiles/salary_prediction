@@ -29,7 +29,7 @@ def salary_per_category_plot(category, df, target = 'salary', order = None, hue_
     plt.xticks(rotation = 45)
     
     
-def faceted_histogram_plot(data, grid_col, grid_kwargs = {}, plot_kwargs = {}, target = 'salary'):
+def faceted_histogram_plot(data, grid_col, grid_kwargs = {}, plot_kwargs = {}, target = 'salary', save_path = None):
     
     if not isinstance(data, pd.DataFrame):
         raise TypeError("The data should be a pandas dataframe.")
@@ -37,6 +37,10 @@ def faceted_histogram_plot(data, grid_col, grid_kwargs = {}, plot_kwargs = {}, t
     plotGrid = sns.FacetGrid(data, col = grid_col, **grid_kwargs)
     plotGrid.map(_faceted_IQR_histogram_figure, target, **plot_kwargs)
     plt.legend(bbox_to_anchor = (1,1))
+
+    if save_path:
+        plt.savefig(save_path, bbox_inches = 'tight')
+
     plt.show()
     
     

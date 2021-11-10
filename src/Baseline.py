@@ -172,7 +172,7 @@ class BaselineModel:
 
 class SelectBestModel():
 
-    def __init__(self, train_data, test_data, category_combos, variations, plot = True):
+    def __init__(self, train_data, test_data, category_combos, variations, plot = True, save_img_path = None):
         self.best_model_score = 1e6
         self.best_model_params = {
             'category_vars': None,
@@ -226,7 +226,7 @@ class SelectBestModel():
         print("\n\n")
 
         if plot:
-            self.plot_outcome()
+            self.plot_outcome(save_path=save_img_path)
         
     def test_best_score(self, score, model: BaselineModel, numeric_combo = None):
         """Compare a new model score with the saved best score. If the new score is lower, then update the saved best score."""
@@ -240,11 +240,14 @@ class SelectBestModel():
                 'numeric_combo': numeric_combo
             }
 
-    def plot_outcome(self):
+    def plot_outcome(self, save_path = None):
         plt.figure(figsize=(7,7))
         ax = sns.heatmap(self.df_output, annot = True, fmt = '.0f', cmap = 'Reds', linewidths = 0.5)
         ax.set_xlabel('numeric variable combinations')
         ax.set_ylabel('categorical variable combinations')
         ax.tick_params('x', rotation = 45)
         plt.title("Mean squared error for each model")
+
+        if save_path:
+            plt.savefig(save_path, bbox_inches = 'tight')
         plt.show()

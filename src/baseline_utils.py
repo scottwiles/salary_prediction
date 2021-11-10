@@ -24,7 +24,7 @@ def add_hue_labels(data):
     return output
 
 
-def visualize_numeric_fit(data: pd.Series, plt_figsize = (10,8)):
+def visualize_numeric_fit(data: pd.Series, plt_figsize = (10,8), save_img_path = None):
     """Plots the numeric fitted salaries created by BaselineModel()"""
     hues_and_styles = ['decrease salary', 'no change','increase salary']
     
@@ -41,7 +41,7 @@ def visualize_numeric_fit(data: pd.Series, plt_figsize = (10,8)):
     plot_df.reset_index(inplace=True)
    
     plt.figure(figsize = plt_figsize)
-    sns.scatterplot(
+    g = sns.scatterplot(
         x = variable_name,
         y = diff_col_name,
         hue = "prediction_impact",
@@ -54,8 +54,32 @@ def visualize_numeric_fit(data: pd.Series, plt_figsize = (10,8)):
         size = "prediction_impact_amount",
         sizes = (50, 300)
     )
+    # add triangle markers to legend (workaround)
+    handles, labels = g.get_legend_handles_labels()
+
+    new_handles = []
+    new_labels = []
+
+    for h, l in zip(handles, labels):
+        # ugly workaround
+        if l.isdigit():
+            new_h = h.legend_elements(prop = 'sizes')[0][0]
+            new_h.set_marker('^')
+            new_handles.append(new_h)
+
+
+        else:
+            new_handles.append(h)
+    
+        new_labels.append(l)
+
+    plt.legend(new_handles, new_labels)
+
     plt.ylabel("Impact to predicted categorical salary")
     plt.title(f"Prediction impact behavior - {variable_name}")
+
+    if save_img_path:
+        plt.savefig(save_img_path, bbox_inches = 'tight')
     plt.show()
 
 

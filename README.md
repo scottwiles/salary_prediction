@@ -3,6 +3,7 @@
 
 ![project techonologies](./img/project-technologies.png)
 
+[**`View live app here`**](https://swiles-salary-prediction.herokuapp.com/)
 
 # Contents
 * [1. Why estimate salaries?](#1-why-estimate-salaries)
@@ -51,7 +52,9 @@ Features:
 
 # 3. EDA
 
-Link to notebook: [github](./notebooks/1.0-data-exploration.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/1.0-data-exploration.ipynb)
+Below I will highlight some key insights from data analysis. For a more thorough analysis, I recommend checking out the notebook.
+
+**Link to notebook:** [github](./notebooks/1.0-data-exploration.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/1.0-data-exploration.ipynb)
 
 ### 3.1 Target - Salary
 
@@ -59,16 +62,62 @@ Link to notebook: [github](./notebooks/1.0-data-exploration.ipynb) | [nbviewer](
 
 The distribution of salaries looks pretty normal, but a little right-skewed. We can also see that there are some values of 0.
 
+Further analysis of the extreme `salary` values:
+- Entries with 0 salary:
+    - There were `5` total instances here, there was no obvious pattern and so these rows were marked for removal during preprocessing.
+- Highly paid `JUNIOR` roles:
+    - I found some jobs marked as `JUNIOR` that were among the top 0.5% of all salaries. However, these jobs had an average `yearsExperience` of `21`. It was decided that these are not outliers or data errors.
+
+### 3.2 Key insights
+
+**Salary vs Job Type and Industry**  
+
+![salary vs job and industry](./img/salary-vs-jobtype-and-industry.jpg)
+
+There are some findings from analysis that seem pretty intuitive. The above chart of `salary` vs. `jobType` and `industry` is an example. We can see that as the rank or position of a job increases (i.e. junior vs senior vs manager), the average salary also increases; and that education or service industry jobs pay less on average than finance or oil. 
+
+**Salary vs Major**
+
+![salary vs major](./img/salary-vs-major.jpg)
+
+When looking at the average salary per major, we can see that just having a degree, and therefore having a major listed, is associated with a big increase in average salary. In fact the major value of `LITERATURE`, which has the lowest average salary other than `NONE`, is well above the overall median salary while having `NONE` major is well below the overall median salary.
+
+![salary vs major distribution](./img/salary-vs-major-distribution.jpg)
+
+It is also apparent here that the dataset contains far more examples of `degree` being `NONE`, than any of the other levels.
+
+**Salary vs Industry and Major**
+
+*Differences across industries*
+
+![salary vs industry and major](./img/salary-vs-industry-and-major.jpg)
+
+This is one outcome of the analysis that I found to be genuinely insightful and not so intuitive.
+
+When looking at average salaries vs. industry and major we can see that:
+- In the `SERVICE` industry, it pays more to have a `BUSINESS` major. 
+- In the `AUTO` industry, it pays more to have an `ENGINEERING` major.
+- In the `HEALTH` industry, it pays more to have `CHEMISTRY` or `BIOLOGY` majors.
+- In the `WEB` industry, it pays more to have `ENGINEERING`, `MATH`, or `PHYSICS` majors.
+- In the `FINANCE` and `OIL` industries, it pays more to have `BUSINESS` or `ENGINEERING` majors. 
+
+*****
 
 # 4. Model development
 
+The modeling process started with a simple baseline using a couple of heuristics to make predictions without machine learning. This ended up giving a decent benchmark performance for more advanced methods to measure up against.
+
+Moving to more advanced methods, multiple machine learning algorithms were tested and evaluated. `XGBoost` ultimately provided the best performance, and was selected to use for deployment.
+
 ## 4.1 Baseline model
 
-Link to notebook: [github](./notebooks/2.0-baseline-model.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/2.0-baseline-model.ipynb)
+**Link to notebook:** [github](./notebooks/2.0-baseline-model.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/2.0-baseline-model.ipynb)
+
+
 
 ## 4.2 Machine learning
 
-Link to notebook: [github](./notebooks/3.0-ML-model-development.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/3.0-ML-model-development.ipynb)
+**Link to notebook:** [github](./notebooks/3.0-ML-model-development.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/3.0-ML-model-development.ipynb)
 
 
 # 5. Deployment
