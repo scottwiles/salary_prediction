@@ -1,4 +1,8 @@
-# Salary Prediction
+# What's my worth?
+***Salary prediction project***
+
+![project techonologies](./img/project-technologies.png)
+
 
 # Contents
 * [1. Why estimate salaries?](#1-why-estimate-salaries)
@@ -49,6 +53,12 @@ Features:
 
 Link to notebook: [github](./notebooks/1.0-data-exploration.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/1.0-data-exploration.ipynb)
 
+### 3.1 Target - Salary
+
+![salary distribution](./img/salary-distribution.jpg)
+
+The distribution of salaries looks pretty normal, but a little right-skewed. We can also see that there are some values of 0.
+
 
 # 4. Model development
 
@@ -75,7 +85,7 @@ Once the API and front-end are ready for deployment, the docker image can be bui
 
 ## 5.1 React front-end
 
-The main UI framework was created using the MUI React library: [check it out here](https://mui.com/)
+The main UI framework was created using the MUI React library: [check it out @ mui.com](https://mui.com/)
 
 [![](./img/ui-screenshot.jpg)](https://swiles-salary-prediction.herokuapp.com/)
 
