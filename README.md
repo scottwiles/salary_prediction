@@ -7,7 +7,7 @@
 
 # Contents
 * [1. Why estimate salaries?](#1-why-estimate-salaries)
-* [2. Data](#2-data)  
+* [2. Data](#2-data)
 * [3. EDA](#3-eda)
 * [4. Model development](#4-model-development)
     * [4.1  Baseline](#41-baseline-model)
@@ -18,7 +18,6 @@
 * [6. Conclusion](#6-conclusion)
 
 ---
-
 
 # 1. Why estimate salaries?
 
@@ -112,6 +111,7 @@ Moving to more advanced methods, multiple machine learning algorithms were teste
 ## 4.1 Baseline model
 
 **Link to notebook:** [github](./notebooks/2.0-baseline-model.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/2.0-baseline-model.ipynb)
+
 
 
 
