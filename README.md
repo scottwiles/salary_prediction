@@ -51,7 +51,7 @@ Features:
 
 # 3. EDA
 
-Below I will highlight some key insights from data analysis. For a more thorough analysis, I recommend checking out the notebook.
+Here I will highlight some key insights from data analysis. For a more thorough analysis, I recommend checking out the notebook.
 
 **Link to notebook:** [github](./notebooks/1.0-data-exploration.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/1.0-data-exploration.ipynb)
 
@@ -112,7 +112,49 @@ Moving to more advanced methods, multiple machine learning algorithms were teste
 
 **Link to notebook:** [github](./notebooks/2.0-baseline-model.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/2.0-baseline-model.ipynb)
 
+The baseline model uses a couple of simple rules to estimate salaries. It feels appropriate to take grouped averages of categorical variables such as `jobType` or `industry` and use these averages to make predictions on new data. Addtionally what I saw in the analysis of the numeric variables `milesFromMetropolis` and `yearsExperience` is that the averages across each value follow a gradual and predictable change. Refer to the [nbviewer link here](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/1.0-data-exploration.ipynb#Miles-from-metropolis) for an illustration. These findings gave me the inspiration to use the relative difference between the grouped averages in these values and the overall average salary. 
 
+*Calculating the relative differnce:*
+- Overall average salary in the data set is $\$116k$
+- Average salary for `0` `yearsExperience` is $\$92k$
+- The relative differnce is therefore: $\$92k - \$116k = -\$24k$
+
+To illustrate this in more detail. Here is what the prediction behavior looks like for all values of `yearsExperience`.
+
+![yearsExperience prediction impact](./img/prediction-behavior-yearsExperience.jpg)
+
+We can see that values around `12` `yearsExperience` are close to the overall average and will not change the overall prediction by much. Values close to `0` or close to `24` will decrease or increase the predicted amount by the most, respectively.
+
+
+Let's run through a full example by predicting the salary of a `MANAGER` with `0` `yearsExperience`.
+
+*Baseline prediction steps:*
+1. $\$115k$ starting point - the overall average `MANAGER` salary.
+2. Add $-\$24k$ - the relative difference of `0` `yearsExperience` vs overall.
+3. The final predicted salary in this case is then: $\$91k$
+
+
+But which categorical variables do we use as our starting grouped average? And what about if we are using both of the numeric variables in our prediction? Do we combine both relative differences? It could be problematic to combine both of these relative differences, if they both lie on the extreme ends. For example if both numeric variables say to add $\$20k$ to the salary this means that the numeric variables could influence the overall salary by $\$40k$ or more.
+
+These questions influenced my design of the baseline model tests. I chose to try two methods of combining the relative differences in the numeric variables: add them together, or take the mean. In this way those extreme cases might be more mitigated. And as for the categorical variables, I tested all `15` combinations.
+
+**Baseline model test results:**
+
+
+For each combo of categorical groupings I tested: only using the grouped average, using one or the other numeric variable, and using both combining them by either adding them or averaging them
+
+![baseline test results](./img/baseline-model-variations-test.jpg)
+
+#### The best performing baseline model scored `371.22` MSE.
+
+**Insights from testing 75 variations**
+
+- **Both numeric variables:**
+    - Using `sum` to combine the numeric diffs gives lower MSE than using `mean` - *in every instance*
+- **1 numeric variable:**
+    - Using `yearsExperience` gives a lower MSE than `milesFromMetropolis` - *in every instance*
+- **2 or 3 categorical variables:**
+    - When `jobType` is __not__ a part of the categorical variables, the MSE is much higher than when it is included
 
 
 ## 4.2 Machine learning
