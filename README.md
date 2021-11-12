@@ -117,9 +117,9 @@ The baseline model uses a couple of simple rules to estimate salaries. It feels 
 Addtionally what I saw in the analysis of the numeric variables `milesFromMetropolis` and `yearsExperience` is that the averages across each value follow a gradual and predictable change. Refer to the [nbviewer link here](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/1.0-data-exploration.ipynb#Miles-from-metropolis) for an illustration. These findings gave me the inspiration to use the relative difference between the grouped averages in these values and the overall average salary. 
 
 *Calculating the relative differnce:*
-1. Overall average salary in the data set is $\$116k$
-2. Average salary for `0` `yearsExperience` is $\$92k$
-3. The relative differnce is therefore: $\$92k - \$116k = -\$24k$
+1. Overall average salary in the data set is `$116k`
+2. Average salary for `0` `yearsExperience` is `$92k`
+3. The relative differnce is therefore: `$92k - $116k = -$24k`
 
 To illustrate this in more detail. Here is what the prediction behavior looks like for all values of `yearsExperience`.
 
@@ -131,17 +131,16 @@ We can see that values around `12` `yearsExperience` are close to the overall av
 Let's run through a full example by predicting the salary of a `MANAGER` with `0` `yearsExperience`.
 
 *Baseline prediction steps:*
-1. $\$115k$ starting point - the overall average `MANAGER` salary.
-2. Add $-\$24k$ - the relative difference of `0` `yearsExperience` vs overall.
-3. The final predicted salary in this case is then: $\$91k$
+1. `$115k` starting point - the overall average `MANAGER` salary.
+2. Add `-$24k` - the relative difference of `0` `yearsExperience` vs overall.
+3. The final predicted salary in this case is then: `$91k`
 
 
-But which categorical variables do we use as our starting grouped average? And what about if we are using both of the numeric variables in our prediction? Do we combine both relative differences? It could be problematic to combine both of these relative differences, if they both lie on the extreme ends. For example if both numeric variables say to add $\$20k$ to the salary this means that the numeric variables could influence the overall salary by $\$40k$ or more.
+But which categorical variables do we use as our starting grouped average? And what about if we are using both of the numeric variables in our prediction? Do we combine both relative differences? It could be problematic to combine both of these relative differences, if they both lie on the extreme ends. For example, if both numeric variables say to add `$20k` to the salary this means that the numeric variables could influence the overall salary by `$40k` or more.
 
-These questions influenced my design of the baseline model tests. I chose to try two methods of combining the relative differences in the numeric variables: add them together, or take the mean. By using the mean those extreme cases might be more mitigated. And as for the categorical variables, I tested all `15` combinations.
+These questions influenced my design of the baseline model tests. I chose to try two methods of combining the relative differences in the numeric variables: add them together, or take the mean. By using the mean those extreme cases might be more mitigated. And as for the categorical variables, I tested all `15` possible combinations.
 
 **Baseline model test results:**
-
 
 For each combo of categorical groupings I tested: 
 - Only using the grouped average.
