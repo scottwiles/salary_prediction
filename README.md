@@ -112,12 +112,14 @@ Moving to more advanced methods, multiple machine learning algorithms were teste
 
 **Link to notebook:** [github](./notebooks/2.0-baseline-model.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/2.0-baseline-model.ipynb)
 
-The baseline model uses a couple of simple rules to estimate salaries. It feels appropriate to take grouped averages of categorical variables such as `jobType` or `industry` and use these averages to make predictions on new data. Addtionally what I saw in the analysis of the numeric variables `milesFromMetropolis` and `yearsExperience` is that the averages across each value follow a gradual and predictable change. Refer to the [nbviewer link here](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/1.0-data-exploration.ipynb#Miles-from-metropolis) for an illustration. These findings gave me the inspiration to use the relative difference between the grouped averages in these values and the overall average salary. 
+The baseline model uses a couple of simple rules to estimate salaries. It feels appropriate to take grouped averages of categorical variables such as `jobType` or `industry` and use these averages to make predictions on new data. 
+
+Addtionally what I saw in the analysis of the numeric variables `milesFromMetropolis` and `yearsExperience` is that the averages across each value follow a gradual and predictable change. Refer to the [nbviewer link here](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/1.0-data-exploration.ipynb#Miles-from-metropolis) for an illustration. These findings gave me the inspiration to use the relative difference between the grouped averages in these values and the overall average salary. 
 
 *Calculating the relative differnce:*
-- Overall average salary in the data set is $\$116k$
-- Average salary for `0` `yearsExperience` is $\$92k$
-- The relative differnce is therefore: $\$92k - \$116k = -\$24k$
+1. Overall average salary in the data set is $\$116k$
+2. Average salary for `0` `yearsExperience` is $\$92k$
+3. The relative differnce is therefore: $\$92k - \$116k = -\$24k$
 
 To illustrate this in more detail. Here is what the prediction behavior looks like for all values of `yearsExperience`.
 
@@ -136,12 +138,15 @@ Let's run through a full example by predicting the salary of a `MANAGER` with `0
 
 But which categorical variables do we use as our starting grouped average? And what about if we are using both of the numeric variables in our prediction? Do we combine both relative differences? It could be problematic to combine both of these relative differences, if they both lie on the extreme ends. For example if both numeric variables say to add $\$20k$ to the salary this means that the numeric variables could influence the overall salary by $\$40k$ or more.
 
-These questions influenced my design of the baseline model tests. I chose to try two methods of combining the relative differences in the numeric variables: add them together, or take the mean. In this way those extreme cases might be more mitigated. And as for the categorical variables, I tested all `15` combinations.
+These questions influenced my design of the baseline model tests. I chose to try two methods of combining the relative differences in the numeric variables: add them together, or take the mean. By using the mean those extreme cases might be more mitigated. And as for the categorical variables, I tested all `15` combinations.
 
 **Baseline model test results:**
 
 
-For each combo of categorical groupings I tested: only using the grouped average, using one or the other numeric variable, and using both combining them by either adding them or averaging them
+For each combo of categorical groupings I tested: 
+- Only using the grouped average.
+- Using one or the other numeric variable.
+- Using both combining them by either adding them or averaging them.
 
 ![baseline test results](./img/baseline-model-variations-test.jpg)
 
