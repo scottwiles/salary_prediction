@@ -107,3 +107,31 @@ class PlotStats:
             plt.axvline(x = self.upper_quartile, label = plot_labels['upper_qt'], linestyle = "-.", zorder = 0, alpha = 0.5)
             plt.axvspan(xmin = self.lower_quartile, xmax = self.upper_quartile, color = 'grey', label = plot_labels['IQR'], zorder = 0, alpha = 0.15)
             plt.legend(bbox_to_anchor = (1,1))
+
+def _encode_category(data, col):
+    '''Replace category labels with the median value, for checking correlations'''
+    category_dict = dict()
+    categories = data[col].unique().tolist()
+    
+    # For each level in the category, calculate the median
+    for cat in categories:
+        category_dict[cat] = data[data[col] == cat]['salary'].median()
+    
+    # Map the median values to the data
+    data[col] = data[col].map(category_dict)
+    
+def make_correlation_plot(df, category_cols):
+    '''Make a correlation plot, encode categorical columns so that each levels label is replaced by the median price for that level'''
+    # copy data to avoid altering the original
+    data = df.copy()
+    
+    # Encode each categorical level with the median
+    for col in category_cols:
+        _encode_category(data, col)
+    
+    # Plot
+    plt.figure(figsize = (12, 10))
+
+    sns.heatmap(data.corr(), cmap='Blues', annot = True)
+    
+    plt.show()
