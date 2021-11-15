@@ -1,0 +1,31 @@
+{
+    "xgb_params": {
+        "objective": "reg:squarederror",
+        "base_score": 0.5,
+        "booster": "gbtree",
+        "colsample_bylevel": 1,
+        "colsample_bynode": 1,
+        "colsample_bytree": 0.5,
+        "gamma": 0.0001,
+        "gpu_id": -1,
+        "importance_type": "gain",
+        "interaction_constraints": "",
+        "learning_rate": 0.1,
+        "max_delta_step": 0,
+        "max_depth": 6,
+        "min_child_weight": 200,
+        "missing": NaN,
+        "monotone_constraints": "()",
+        "n_estimators": 275,
+        "n_jobs": 8,
+        "num_parallel_tree": 1,
+        "random_state": 0,
+        "reg_alpha": 0,
+        "reg_lambda": 1,
+        "scale_pos_weight": 1,
+        "subsample": 1,
+        "tree_method": "hist",
+        "validate_parameters": 1,
+        "verbosity": null
+    }
+}

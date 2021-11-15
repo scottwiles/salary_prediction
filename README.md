@@ -3,7 +3,7 @@
 
 ![project techonologies](./img/project-technologies.png)
 
-[**`View live app here`**](https://swiles-salary-prediction.herokuapp.com/)
+[**`View live app here`**](https://swiles-salary-prediction.herokuapp.com/): *It may take a moment to load, if the app is idle.*
 
 # Contents
 * [1. Why estimate salaries?](#1-why-estimate-salaries)
@@ -16,6 +16,7 @@
     * [5.1 React front-end](#51-react-front-end)
     * [5.2 Flask API](#52-flask-api)
 * [6. Conclusion](#6-conclusion)
+* [7. Project Structure](#7-project-structure)
 
 ---
 
@@ -104,6 +105,8 @@ When looking at average salaries vs. industry and major we can see that:
 
 # 4. Model development
 
+Evaluation metric: `Mean Squared Error (MSE)`
+ 
 The modeling process started with a simple baseline using a couple of heuristics to make predictions without machine learning. This ended up giving a decent benchmark performance for more advanced methods to measure up against.
 
 Moving to more advanced methods, multiple machine learning algorithms were tested and evaluated. `XGBoost` ultimately provided the best performance, and was selected to use for deployment.
@@ -125,12 +128,12 @@ To illustrate this in more detail. Here is what the prediction behavior looks li
 
 ![yearsExperience prediction impact](./img/prediction-behavior-yearsExperience.jpg)
 
-We can see that values around `12` `yearsExperience` are close to the overall average and will not change the overall prediction by much. Values close to `0` or close to `24` will decrease or increase the predicted amount by the most, respectively.
+We can see that values around `12` `yearsExperience` are close to the overall average and will not change the final prediction by much. Values close to `0` or close to `24` will decrease or increase the predicted amount by the most, respectively.
 
 
 Let's run through a full example by predicting the salary of a `MANAGER` with `0` `yearsExperience`.
 
-*Baseline prediction steps:*
+**Baseline prediction steps:**
 1. `$115k` starting point - the overall average `MANAGER` salary.
 2. Add `-$24k` - the relative difference of `0` `yearsExperience` vs overall.
 3. The final predicted salary in this case is then: `$91k`
@@ -165,6 +168,63 @@ For each combo of categorical groupings I tested:
 
 **Link to notebook:** [github](./notebooks/3.0-ML-model-development.ipynb) | [nbviewer](https://nbviewer.org/github/scottwiles/salary_prediction/blob/main/notebooks/3.0-ML-model-development.ipynb)
 
+**Models selected for evaluation:**
+- Linear regression
+- Random forest
+- Gradient boosted trees (XGBoost)
+
+Modeling was conducted using 5-fold cross validation.
+
+First I scored the models against the baseline with basic hyperparameter settings:
+
+| Model             | Train Score | Test Score | Test-Train Diff |
+|:------------------|:-----------:|:----------:|----------------:|
+| Linear Regression |   384.38    |   384.40   |      0.02       |
+| Random Forest     |   302.61    |   375.33   |     72.72       | 
+| Baseline Model    |   371.29    |   371.22   |     -0.07       | 
+| XGBoost           |   352.26    |   358.50   |      6.24       |
+
+Our baseline model scored a lower MSE than both linear regression and a random forest with default hyperparameters. The XGBoost performed the best here, in terms of test set score, however the random forest model seems to have fit the training data a lot better. So I chose to take both the random forest and XGBoost for hyperparameter tuning; maybe with some tuning and regularization, the random forest could out perform the XGBoost.
+
+**Random forest hyperparameter tuning:**
+
+|                       | Train Score | Test Score | Test-Train Diff |
+|:----------------------|:-----------:|:----------:|----------------:|
+| Default Random Forest |   302.61    |   375.33   |      72.72      |
+| Tuned Random Forest   |   346.24    |   374.65   |      28.41      |
+
+Found parameters: { max_depth: 15, n_estimators: 150, min_samples_leaf: 25 }
+
+The disparity between training and test set scores was reduced with tuning and the model generalizes better. But the test set score was only improved slightly to `374.65`. And based on various validation curves that were plotted, it doesn't look too promising to lower the score much further.
+
+**XGBoost hyperparameter tuning:**
+
+|                 | Train Score | Test Score | Test-Train Diff |
+|:----------------|:-----------:|:----------:|----------------:|
+| Default XGBoost |   352.26    |   358.50   |      6.24       |
+| Tuned XGBoost   |   352.32    |   355.24   |      2.92       |
+
+XGBoost parameters can be viewed [here](./references/xgboost_v1_params.json)
+
+The test score has been improved from `358.50` to `355.24`. Additionally the disparity between the the train and test set scores has been lowered and the model generalizes better than the default XGBoost.
+
+
+#### XGBoost Residuals:
+
+![XGBoost residuals](./img/xgb_residuals.jpg)
+
+- The residuals follows a pretty normal distribution overall. 
+- The standard deviation of the residuals grows as a function of the fitted values.
+    - The model predictions are more consistent and accurate on lower-salaried jobs.
+- The size of the residuals also tends to grow larger as a function of the fitted values.
+
+
+#### XGBoost Feature Importances
+
+![feature importances](./img/xgb_feature_importances.jpg)
+
+`jobType` and `yearsExperience` are the most important features for predicting salaries, using this model.
+
 
 # 5. Deployment
 
@@ -186,6 +246,44 @@ The main UI framework was created using the MUI React library: [check it out @ m
 
 ## 5.2 Flask API
 
+The file `./api/app.py` defines the flask app, and it makes use of two main routes for predictions:
+
+* `/single-prediction`:
+    - Accepts a JSON string, where the keys are each of the feature names, and the values hold the details of the job to be predicted.
+    - Returns single salary in an array.
+* `/multiple-prediction`: 
+    - Accepts an array of JSON objects, where each object holds the same information as in single-predict mode but with an added `id` attribute.
+    - Returns a JSON object where keys are id's matching id's in the webapp, and values are the predicted salaries.
 ---
 
 # 6. Conclusion
+
+In this project we have explored data from job postings, as well as built and deployed a predictive model to Heroku. Job seekers can now make use of the webapp as a tool to understand what kind of salary they can expect with their individual set of credentials and location relative to a metropolis area.
+
+Future opportunities for improvement include, but are not limited to, improving the model and expanding the deployment infrastructure to handle larger bulk predictions. As for model improvement, I think exploring [feature engineering](./notebooks/3.5-xgboost-model-improvement.ipynb) options is a great starting point as our model needs less overall error; this could also help with making higher-end salary predictions more consistent and accurate. This project can also easily be extended for use in a corporate HR setting, if we expand the computational power of the cloud environment to support larger bulk predictions. 
+
+# 7. Project Structure
+
+[**`Environment setup`**](./references/environment-setup.md): Instructions to recreate both python and React environments.
+
+```
+|   Dockerfile
+|   deployment_requirements.txt
+|   requirements.txt
+|   setup.py
+├── api
+│   ├── app.py         <- Flask app.
+│
+├── front-end          <- Main React webapp folder.
+|
+├── img                <- Plots and figures.
+|
+├── models             <- Saved and exported models.
+│
+├── notebooks          <- Jupyter notebooks.
+│
+├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+│
+├── src                <- Custom methods and classes used for EDA, model development and evaluation.
+
+```

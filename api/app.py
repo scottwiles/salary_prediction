@@ -15,6 +15,8 @@ def index():
     return send_from_directory(app.static_folder, 'index.html')
 
 
+# This is needed because apparently favicons in React don't play well
+# when using flask
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(app.static_folder, 'favicon.ico')
@@ -47,12 +49,14 @@ def multi_predict():
     # Get predictions, convert to list because np.array is not JSON serializable
     preds = model.predict(req_df).tolist()
 
+    # Return a dictionary with id's as keys and values being salaries
     output = {id:pred for id, pred in zip(output_ids, preds)}
 
     return {'message': output}
 
 
 if __name__ == "__main__":
+    # Get port if it is set in the environment, otherwise use 5000
     port = int(os.getenv('PORT', 5000))
 
     debug_value = False
