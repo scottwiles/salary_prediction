@@ -84,7 +84,7 @@ When looking at the average salary per major, we can see that just having a degr
 
 ![salary vs major distribution](./img/salary-vs-major-distribution.jpg)
 
-It is also apparent here that the dataset contains far more examples of `degree` being `NONE`, than any of the other levels.
+It is also apparent here that the dataset contains far more examples of `major` being `NONE`, than any of the other levels.
 
 **Salary vs Industry and Major**
 
