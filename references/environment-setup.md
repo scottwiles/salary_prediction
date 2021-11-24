@@ -29,7 +29,7 @@ pip install -r requirements.txt
 ---
 
 ## Front-end React Environment
-_*Must have node.js insatlled first_
+_*Must have node.js installed first_
 
 1. Open a terminal in the main project directory, change to `front-end` directory  
 `cd front-end`
