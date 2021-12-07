@@ -122,7 +122,7 @@ Addtionally what I saw in the analysis of the numeric variables `milesFromMetrop
 *Calculating the relative differnce:*
 1. Overall average salary in the data set is `$116k`
 2. Average salary for `0` `yearsExperience` is `$92k`
-3. The relative differnce is therefore: `$92k - $116k = -$24k`
+3. The relative difference is therefore: `$92k - $116k = -$24k`
 
 To illustrate this in more detail. Here is what the prediction behavior looks like for all values of `yearsExperience`.
 
